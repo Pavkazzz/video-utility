@@ -9,9 +9,9 @@ def getLength(file):
     filepath = file[1]
     name = file[0]
     if platform.system() == "Linux":
-        command = 'C:\\ffprobe -i  "' + filepath + '" 2>&1 |grep "Duration"'
+        command = 'ffprobe -i  "' + filepath + '" 2>&1 |grep "Duration"'
     elif platform.system() == "Windows":
-        command = 'C:\\ffprobe.exe -i  "' + filepath + '" 2>&1 |findstr "Duration"'
+        command = 'ffprobe.exe -i  "' + filepath + '" 2>&1 |findstr "Duration"'
 
     else:
         raise Exception("this platform is not supported")
