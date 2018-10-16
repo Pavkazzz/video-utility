@@ -22,9 +22,8 @@ class Media:
         elif self.platform == "Windows":
             command = 'ffprobe.exe -i  "' + self.filePath + '" 2>&1 |findstr "Duration"'
         else:
-            raise Exception("this platform is not supported")
+            raise OSError
         a = str(subprocess.check_output(command, shell=True))
-        del command
         a = a.split(",")[0].split("Duration:")[1].strip()
         try:
             self.hours, self.minutes, self.seconds = a.split(':')
