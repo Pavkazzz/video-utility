@@ -3,6 +3,7 @@ import subprocess
 import platform
 from multiprocessing import Pool
 import progressbar
+import configargparse
 
 
 class Media:
@@ -42,25 +43,26 @@ def get_async(item):
 
 
 if __name__ == "__main__":
-    directory = "Z:\\Tapes\\raw"
+    args = configargparse.ArgParser()
+    args.add_argument('-l', '--pool', default=5, help='multiprocessing pool size')
+    args.add_argument('-p', '--path', required=True, help='Destination folder path')
+    options = args.parse_args()
+    directory = args.parse_args().path
     files = os.listdir(directory)
     fileList = []
-    pool = Pool(5)
+    pool = Pool(int(args.parse_args().pool))
     for num, file in enumerate(files):
         fileList.append([num, Media(file, os.path.join(directory, file))])
     Media.bar.max_value = len(files)
     fileList = pool.map(get_async, fileList)
 
     media = {}
-
+    Media.bar.finish()
     for file in fileList:
         name = file.name
         media[name] = [[file.hours, file.minutes, file.seconds],
                        float(str(file.hours) + str(file.minutes) + str(file.seconds))
                        ]
     sorted_by_value = sorted(media.items(), key=lambda kv: kv[1][1])
-    Media.bar.finish()
     for element in sorted_by_value:
         print(f"{element[0]} - {element[1][0][0]}:{element[1][0][1]}:{element[1][0][2]}")
-
-    input()
